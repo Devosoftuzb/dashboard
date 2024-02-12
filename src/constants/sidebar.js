@@ -1,0 +1,51 @@
+export const header = [
+    {
+        id: 1,
+        title: "Asosiy",
+        link: "/",
+        icon: "bx bxs-dashboard",
+        role: '',
+    },
+    {
+        id: 2,
+        title: "Jamo",
+        link: "/teams",
+        icon: "bx bxs-user-rectangle",
+        role: '',
+    },
+    {
+        id: 3,
+        title: "Afzalliklar",
+        link: "/advantages",
+        icon: "bx bx-grid-alt",
+        role: '',
+    },
+    {
+        id: 4,
+        title: "Hamkorlar",
+        link: "/partners",
+        icon: "bx bxs-group",
+        role: '',
+    },
+    {
+        id: 5,
+        title: "Kategoriya",
+        link: "/category",
+        icon: "bx bxs-book-bookmark",
+        role: '',
+    },
+    {
+        id: 6,
+        title: "Portfolio",
+        link: "/portfolio",
+        icon: "bx bx-credit-card-front",
+        role: '',
+    },
+    {
+        id: 6,
+        title: "Xabarlar",
+        link: "/messages",
+        icon: "bx bxs-message-rounded-dots",
+        role: '',
+    },
+];
