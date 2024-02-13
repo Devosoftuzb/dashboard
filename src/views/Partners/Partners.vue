@@ -352,7 +352,7 @@
                   <ul
                     v-show="store.filter_show"
                     class="absolute z-10 max-h-80 overflow-y-auto overflow-hidden py-1 text-gray-600 rounded bg-white w-full"
-                    :class="{ hidden: !store.searchList.length }"
+                    
                   >
                     <li
                       class="hover:bg-gray-100 cursor-pointer pl-2"
