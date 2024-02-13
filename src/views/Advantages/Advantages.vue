@@ -339,21 +339,31 @@
                     </svg>
                   </div>
                   <input
+                    v-model="store.filter"
+                    @input="
+                      store.filter_show = true;
+                      searchFunc();
+                    "
                     type="search"
                     id="simple-search"
                     class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2"
                     placeholder="Qidirish .."
                   />
                   <ul
+                    v-show="store.filter_show"
                     class="absolute z-10 max-h-80 overflow-y-auto overflow-hidden py-1 text-gray-600 rounded bg-white w-full"
                     
                   >
                     <li
                       class="hover:bg-gray-100 cursor-pointer pl-2"
-              
-                      
+                        v-for="(i, index) in store.searchList"
+                       :key="index"
+                       @click="
+                        store.filter = i.name_uz;
+                        searchFunc();
+                    "
                     >
-                      <!-- {{ i.full_name }} -->
+                        {{ i.name_uz }}
                     </li>
                   </ul>
                 </div>
@@ -372,7 +382,8 @@
                   class="text-xs rounded-lg uppercase"
                   :class="navbar.userNav ? 'bg-gray-700' : 'bg-gray-50'"
                 >
-                <tr>
+                <tr
+                >
                     <th scope="col" class="text-center py-3">No</th>
                     <th scope="col" class="text-center py-3">Icon</th>
                     <th scope="col" class="text-center py-3">Name</th>
@@ -387,21 +398,26 @@
                     :class="
                       navbar.userNav ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-50 text-black'
                     "
+                     v-show="!store.searchList.length"
+                    v-for="i in store.PageProduct"
+                    :key="i.id"
                   >
                     <th
                       scope="row"
                       class="text-center px-5 py-3 font-medium whitespace-nowrap"
                     >
-                      1 
+                     {{ i.id }}
                     </th>
                     <td class="flex items-center justify-center py-2">
-                      <i class='bx bx-universal-access text-[50px]'></i>
+                      <!-- <i class='bx bx-universal-access text-[50px]'></i>
+                       -->
+                       <img class="avzalik__img" :src="i.image" alt="foto">
                     </td>
                     <td class="text-center font-medium  px-5 py-2">
-                      Dasturiy organ
+                      {{ i.name_uz }}
                     </td>
                     <td class="text-center font-medium px-5 py-2">
-                      2023:01:01
+                      {{ i.created_at.slice(0,10) }}
                     </td>
                     <td class="text-center font-medium px-5 py-3">
                       <button
@@ -428,21 +444,26 @@
                     :class="
                       navbar.userNav ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-50 text-black'
                     "
+                      v-show="store.searchList.length"
+                      v-for="i in store.searchList"
+                      :key="i.id"
                   >
                     <th
                       scope="row"
                       class="text-center px-5 py-3 font-medium whitespace-nowrap"
                     >
-                      1 
+                     {{ i.id }}
                     </th>
                     <td class="flex items-center justify-center py-2">
-                      <i class='bx bx-universal-access text-[50px]'></i>
+                      <!-- <i class='bx bx-universal-access text-[50px]'></i>
+                       -->
+                       <img class="avzalik__img" :src="i.image" alt="foto">
                     </td>
                     <td class="text-center font-medium  px-5 py-2">
-                      Dasturiy organ
+                      {{ i.name_uz }}
                     </td>
                     <td class="text-center font-medium px-5 py-2">
-                      2023:01:01
+                      {{ i.created_at.slice(0,10) }}
                     </td>
                     <td class="text-center font-medium px-5 py-3">
                       <button
@@ -464,20 +485,30 @@
                       </i>
                     </td>
                   </tr>
+                  
                 </tbody>
               </table>
-              <!-- <div
-                class="w-full max-w-screen text-center p-20 text-2xl font-medium"
-              >
-                <h1>Xodimlar ro'yhati bo'sh</h1>
-              </div> -->
+              <div
+              v-show="!store.PageProduct && store.error"
+              class="w-full max-w-screen text-center p-20 text-2xl font-medium"
+            >
+              <h1>Xodimlar ro'yhati bo'sh</h1>
+            </div>
             </div>
             <nav
+            v-if="!store.searchList.length"
               class="flex flex-row justify-between items-center md:items-center space-y-3 md:space-y-0 p-4"
               aria-label="Table navigation"
             >
               <ul class="inline-flex items-stretch -space-x-px">
                 <li
+                :class="{
+                  'pointer-events-none opacity-50': store.page[0] == 1,
+                }"
+                @click="
+                  store.pagination -= 1;
+                  getProduct(store.pagination);
+                "
                   href="#"
                   class="flex font-bold text-black border-2 bg-white hover:bg-gray-300 items-center justify-center text-sm py-2 sm:mt-0 -mt-2 px-6 rounded-lg leading-tight"
                 >
@@ -487,15 +518,25 @@
               <span class="text-sm font-normal">
                 Sahifa
                 <span class="font-semibold"
-                  ><span></span> -
-                  <span></span
-                  ><span></span></span
-                >
+                ><span>{{ store.page[0] }}</span> -
+                <span>{{
+                  store.page[1]
+                }}</span
+                ></span
+              >
                 dan
-                <span class="font-semibold"></span>
+                <span class="font-semibold">{{ store.page[2] }}</span>
               </span>
               <ul class="inline-flex items-stretch -space-x-px">
                 <li
+                :class="{
+                  'pointer-events-none opacity-50':
+                    store.page[1] >= store.page[2],
+                }"
+                @click="
+                  store.pagination += 1;
+                  getProduct(store.pagination);
+                "
                   href="#"
                   class="flex font-bold text-black border-2 bg-white hover:bg-gray-300 items-center justify-center text-sm py-2 sm:mt-0 -mt-2 px-6 rounded-lg leading-tight"
                 >
@@ -527,6 +568,75 @@
   const modal = ref(false);
   const toggleModal = () => (modal.value = !modal.value);
   
+  const store = reactive({
+  PageProduct: "",
+  page: [],
+  pagination: 1,
+  allProducts: false,
+  error: false,
+  filter: "",
+  filter_show: false,
+  searchList: [],
+});
+
+// ---------------------------- search ------------------------------------
+function searchFunc() {
+  store.searchList = [];
+  for (let i of store.allProducts) {
+    if (i.name_uz.toLowerCase().includes(store.filter.toLowerCase())) {
+      store.searchList.push(i);
+    }
+  }
+
+  if (!store.filter.length) {
+    store.searchList = [];
+  }
+}
+// ---------------------------- search end ------------------------------------
+
+const getAllProduct = () =>{
+  axios
+  .get("/advantages",{
+    // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+  })
+  .then((res) => {
+      console.log(res.data);
+      store.allProducts = res.data?.data;
+      store.error = false;
+    })
+    .catch((error) => {
+      notification.warning(error.response.data.message);
+      store.error = true;
+      store.allProducts = error.response.data.message;
+    });
+};
+
+const getProduct = (page) => {
+  axios
+    .get(`/advantages?page=${page}`, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      console.log(res.data?.data);
+      store.PageProduct = res.data?.data;
+      store.page = [];
+      store.page.push(res.data?.from, res.data?.to, res.data?.total);
+      store.error = false;
+    })
+    .catch((error) => {
+      store.PageProduct = error.response.data.message;
+      store.error = true;
+    });
+};
+onMounted(() => {
+  getAllProduct();
+  getProduct(1);
+});
+
   </script>
   
   <style lang="scss" scoped>
@@ -553,5 +663,9 @@
       #2f73f0
     );
   }
+  .avzalik__img{
+  width: 50px;
+  height: 50px;
+}
   </style>
   
