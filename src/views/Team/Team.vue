@@ -48,8 +48,8 @@
             </button>
           </div>
           <!-- Modal body -->
-          <form>
-            <div class="grid font-medium gap-4 mb-4 sm:grid-cols-2">
+          <form @submit.prevent="createProduct">
+            <div class="grid font-medium gap-4 mb-4">
               <div>
                 <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="login" class="block mb-2 text-sm">Rasm</label>
                 <input :class="navbar.userNav ? 'text-white' : 'text-black'"
@@ -58,25 +58,16 @@
                   id="login"
                   class="text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="Rasm"
-                  required
+                  
                 />
               </div>
-              <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="password" class="block mb-2 text-sm">Lavozim</label>
-                <input 
-                  type="text"
-                  name="password"
-                  id="password"
-                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
-                  placeholder="Lavozim"
-                  required
-                />
-              </div>
-              <div class="w-[205%]">
+              <div class="flex items-center gap-5">
+                <div class="w-full">
                 <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="name" class="block mb-2 text-sm"
                   >To'liq ismi (I . F . O)</label
                 >
                 <input
+                  v-model="form.name"
                   type="text"
                   name="name"
                   id="name"
@@ -85,23 +76,63 @@
                   required
                 />
               </div>
-              <div></div>
-              <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="phone" class="block mb-2 text-sm">Link</label>
-                <input
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="password" class="block mb-2 text-sm">Lavozim</label>
+                <input 
+                  v-model="form.position"
                   type="text"
-                  name="phone"
-                  id="phone"
+                  name="password"
+                  id="password"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
-                  placeholder="Link"
+                  placeholder="Lavozim"
                   required
                 />
+              </div>
+            </div>
+              <div class="flex items-center gap-5">
+                <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="telegram" class="block mb-2 text-sm">Telegram Link</label>
+                <input
+                  v-model="form.telegram"
+                  type="text"
+                  name="telegram"
+                  id="telegram"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                  
+                />
+              </div>
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="instagram" class="block mb-2 text-sm">Instagram Link</label>
+                <input
+                v-model="form.instagram"
+                  type="text"
+                  name="instagram"
+                  id="instagram"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                  
+                />
+              </div>
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="linkedin" class="block mb-2 text-sm">LinkedIn Link</label>
+                <input
+                v-model="form.linkedin"
+                  type="text"
+                  name="linkedin"
+                  id="linkedin"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                
+                />
+              </div>
               </div>
             </div>
             <div
               class="w-full flex items-center justify-between border-t pt-5 mt-5"
             >
               <button
+              @click="cancelFunc"
                 type="button"
                 class="border cursor-pointer inline-flex items-center bg-white hover:bg-red-700 hover:border-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
@@ -456,7 +487,7 @@
                     {{ i.id }}
                   </th>
                   <td class="flex items-center justify-center py-2">
-                    <img class="w-16 h-16 rounded-full" :src="i.image" alt="" />
+                    <img class="w-16 h-16" :src="i.image" alt="" />
                   </td>
                   <td class="text-center font-medium px-5 py-2">
                     {{ i.name }}
@@ -632,6 +663,58 @@ const store = reactive({
   filter_show: false,
   searchList: [],
 });
+
+function cancelFunc() {
+  form.image = "",
+  form.name = "";
+  form.position = "";
+  form.telegram = "";
+  form.instagram = "";
+  form.linkidin = "";
+  modal.value = false;
+}
+
+const form = reactive({
+  image: "",
+  name: "",
+  position: "",
+  telegram: "",
+  instagram: "",
+  linkidin: "",
+});
+
+const createProduct = () => {
+  const data = {
+    image: form.image,
+    name: form.name,
+    position: form.position,
+    telegram: form.telegram,
+    instagram: form.instagram,
+    linkidin: form.linkidin
+  };
+  axios
+    .post("/teams", data, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      modal.value = false;
+      notification.success(res.data.message);
+      getProduct(store.pagination);
+      info.getStaff();
+      form.name = "";
+      form.position = "";
+      form.telegram = "";
+      form.instagram = "";
+      form.linkidin = "";
+    })
+    .catch((error) => {
+      if (error.response.data.statusCode == 400) {
+        notification.warning(error.response.data.message);
+      }
+    });
+};
 
 // ---------------------------- search ------------------------------------
 function searchFunc() {

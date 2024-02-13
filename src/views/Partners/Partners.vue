@@ -415,7 +415,7 @@
                      {{ i.name }}
                     </td>
                     <td class="text-center font-medium px-5 py-2">
-                        <a :href="i.link"><button
+                        <a :href="i.link" target="_blank"><button
                         class="btnKirish bg-blue-600 rounded-lg px-5 py-2.5 text-white focus:ring-2"
                       >
                         Otish
