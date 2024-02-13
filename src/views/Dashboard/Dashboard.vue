@@ -268,39 +268,37 @@ import ChartLine from "../../components/ChartLine.vue";
 import UsersChart from "../../components/UsersChart.vue";
 import { useNavStore } from "../../stores/toggle";
 import { useInfoStore } from "../../stores/dashboard";
-// import axios from "../../services/axios";
+import axios from "../../services/axios";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const navbar = useNavStore();
 const info = useInfoStore();
 
-// const store = reactive({
-//   data: false,
-//   cards: ["Xodimlar", "O'quvchilar", "Fanlar", "Guruhlar"],
-// });
+const store = reactive({
+  data: false,
+  cards: ["Xodimlar", "O'quvchilar", "Fanlar", "Guruhlar"],
+});
 
-// setTimeout(() => {
-//   store.data = true;
-// }, 1000);
+setTimeout(() => {
+  store.data = true;
+}, 1000);
 
-// const getGuard = () => {
-//   axios
-//     .get("/staff", {
-//       // headers: {
-//       //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       // },
-//     })
-//     .then((res) => {})
-//     .catch((error) => {
-//       if (error.response.data.message == "Admin huquqi sizda yo'q!") {
-//         router.push("/start_test");
-//       }
-//     });
-// };
+const getGuard = () => {
+  axios
+    .get("/teams", {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {})
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
-// onBeforeMount(() => {
-//   getGuard();
-// });
+onBeforeMount(() => {
+  getGuard();
+});
 </script>
 
 <style lang="scss" scoped>

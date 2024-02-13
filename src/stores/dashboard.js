@@ -12,10 +12,10 @@ export const useInfoStore = defineStore('info', () => {
 
     const getStaff = () => {
         axios
-            .get("/staff", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+            .get("/advantages", {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+                // },
             })
             .then(res => {
                 store.staff = res.data;
@@ -26,10 +26,10 @@ export const useInfoStore = defineStore('info', () => {
 
     const getStudent = () => {
         axios
-            .get("/student", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+            .get("/teams", {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+                // },
             })
             .then((res) => {
                 store.students = res.data;
@@ -41,10 +41,10 @@ export const useInfoStore = defineStore('info', () => {
 
     const getSubjects = () => {
         axios
-            .get("/subject", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+            .get("/advantages", {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+                // },
             })
             .then((res) => {
                 store.subjects = res.data;
@@ -56,10 +56,10 @@ export const useInfoStore = defineStore('info', () => {
 
     const getGroup = () => {
         axios
-            .get("/group", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+            .get("/partnerships", {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+                // },
             })
             .then((res) => {
                 store.groups = res.data;
