@@ -223,21 +223,32 @@
                     </svg>
                   </div>
                   <input
+                  v-model="store.filter"
+                  @input="
+                    store.filter_show = true;
+                    searchFunc();
+                  "
                     type="search"
                     id="simple-search"
                     class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2"
                     placeholder="Qidirish .."
                   />
                   <ul
+                  v-show="store.filter_show"
                     class="absolute z-10 max-h-80 overflow-y-auto overflow-hidden py-1 text-gray-600 rounded bg-white w-full"
                     
                   >
                     <li
                       class="hover:bg-gray-100 cursor-pointer pl-2"
-              
+                    v-for="(i, index) in store.searchList"
+                    :key="index"
+                    @click="
+                      store.filter = i.name;
+                      searchFunc();
+                    "
                       
                     >
-                      <!-- {{ i.full_name }} -->
+                    {{ i.name }}
                     </li>
                   </ul>
                 </div>
@@ -258,6 +269,7 @@
                 >
                 <tr>
                     <th scope="col" class="text-center py-3">No</th>
+                    <th scope="col" class="text-center py-3">Name</th>
                     <th scope="col" class="text-center py-3">Yangi habar</th>
                     <th scope="col" class="text-center py-3">To'liq ma'lumot</th>
                     <th></th>
@@ -269,15 +281,21 @@
                     :class="
                       navbar.userNav ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-50 text-black'
                     "
+                    v-show="!store.searchList.length"
+                  v-for="i in store.PageProduct"
+                  :key="i.id"
                   >
                     <th
                       scope="row"
                       class="text-center px-5 py-3 font-medium whitespace-nowrap"
                     >
-                      1 
+                    {{ i.id }} 
                     </th>
-                    <td class="font-medium  px-5 py-2 w-[700px]">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates reiciendis dolor, unde expedita accusantium fuga autem culpa dicta eveniet ....
+                    <td class="message__name font-medium px-5">
+                     {{ i.name }}
+                    </td>
+                    <td class=" font-medium  px-5 py-2 w-[400px]">
+                     {{ i.description }}
                     </td>
                     
                     <td class="text-center font-medium px-5 py-3">
@@ -305,15 +323,21 @@
                     :class="
                       navbar.userNav ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-50 text-black'
                     "
+                    v-show="store.searchList.length"
+                  v-for="i in store.searchList"
+                  :key="i.id"
                   >
-                    <th
+                  <th
                       scope="row"
                       class="text-center px-5 py-3 font-medium whitespace-nowrap"
                     >
-                      1 
+                    {{ i.id }} 
                     </th>
-                    <td class="font-medium  px-5 py-2 w-[700px]">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates reiciendis dolor, unde expedita accusantium fuga autem culpa dicta eveniet ....
+                    <td class="message__name font-medium px-5">
+                     {{ i.name }}
+                    </td>
+                    <td class=" font-medium  px-5 py-2 w-[400px]">
+                     {{ i.description }}
                     </td>
                     
                     <td class="text-center font-medium px-5 py-3">
@@ -338,18 +362,27 @@
                   </tr>
                 </tbody>
               </table>
-              <!-- <div
-                class="w-full max-w-screen text-center p-20 text-2xl font-medium"
-              >
-                <h1>Xodimlar ro'yhati bo'sh</h1>
-              </div> -->
+              <div
+              v-show="!store.PageProduct && store.error"
+              class="w-full max-w-screen text-center p-20 text-2xl font-medium"
+            >
+              <h1>Xodimlar ro'yhati bo'sh</h1>
+            </div>
             </div>
             <nav
+              v-if="!store.searchList.length"
               class="flex flex-row justify-between items-center md:items-center space-y-3 md:space-y-0 p-4"
               aria-label="Table navigation"
             >
               <ul class="inline-flex items-stretch -space-x-px">
                 <li
+                :class="{
+                  'pointer-events-none opacity-50': store.page[0] == 1,
+                }"
+                @click="
+                  store.pagination -= 1;
+                  getProduct(store.pagination);
+                "
                   href="#"
                   class="flex font-bold text-black border-2 bg-white hover:bg-gray-300 items-center justify-center text-sm py-2 sm:mt-0 -mt-2 px-6 rounded-lg leading-tight"
                 >
@@ -357,17 +390,27 @@
                 </li>
               </ul>
               <span class="text-sm font-normal">
-                Sahifa
-                <span class="font-semibold"
-                  ><span></span> -
-                  <span></span
-                  ><span></span></span
-                >
-                dan
-                <span class="font-semibold"></span>
-              </span>
+              Sahifa
+              <span class="font-semibold"
+                ><span>{{ store.page[0] }}</span> -
+                <span>{{
+                  store.page[1]
+                }}</span
+                ></span
+              >
+              dan
+              <span class="font-semibold">{{ store.page[2] }}</span>
+            </span>
               <ul class="inline-flex items-stretch -space-x-px">
                 <li
+                :class="{
+                  'pointer-events-none opacity-50':
+                    store.page[1] >= store.page[2],
+                }"
+                @click="
+                  store.pagination += 1;
+                  getProduct(store.pagination);
+                "
                   href="#"
                   class="flex font-bold text-black border-2 bg-white hover:bg-gray-300 items-center justify-center text-sm py-2 sm:mt-0 -mt-2 px-6 rounded-lg leading-tight"
                 >
@@ -398,7 +441,79 @@
   
   const modal = ref(false);
   const toggleModal = () => (modal.value = !modal.value);
+
   
+  const store = reactive({
+  PageProduct: "",
+  page: [],
+  pagination: 1,
+  allProducts: false,
+  error: false,
+  filter: "",
+  filter_show: false,
+  searchList: [],
+});
+
+// ---------------------------- search ------------------------------------
+function searchFunc() {
+  store.searchList = [];
+  for (let i of store.allProducts) {
+    if (i.name.toLowerCase().includes(store.filter.toLowerCase())) {
+      store.searchList.push(i);
+    }
+  }
+
+  if (!store.filter.length) {
+    store.searchList = [];
+  }
+}
+// ---------------------------- search end ------------------------------------
+
+
+const getAllProduct = () => {
+  axios
+    .get("/contacts", {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      console.log(res.data);
+      store.allProducts = res.data?.data;
+      store.error = false;
+    })
+    .catch((error) => {
+      notification.warning(error.response.data.message);
+      store.error = true;
+      store.allProducts = error.response.data.message;
+    });
+};
+
+const getProduct = (page) => {
+  axios
+    .get(`/contacts?page=${page}`, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      console.log(res.data?.data);
+      store.PageProduct = res.data?.data;
+      store.page = [];
+      store.page.push(res.data?.from, res.data?.to, res.data?.total);
+      store.error = false;
+    })
+    .catch((error) => {
+      store.PageProduct = error.response.data.message;
+      store.error = true;
+    });
+};
+
+onMounted(() => {
+  getAllProduct();
+  getProduct(1);
+});
+
   </script>
   
   <style lang="scss" scoped>
@@ -424,6 +539,9 @@
       rgb(138, 183, 254) -250%,
       #2f73f0
     );
+  }
+  .message__name{
+    text-align: center;
   }
   </style>
   
