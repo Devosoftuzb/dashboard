@@ -53,11 +53,14 @@
               <div>
                 <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="login" class="block mb-2 text-sm">Rasm</label>
                 <input :class="navbar.userNav ? 'text-white' : 'text-black'"
+                  accept="image/jpg, image/jpeg, image/png"
                   type="file"
                   name="login"
                   id="login"
                   class="text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="Rasm"
+                  @change="(e) => setImg(e)"
+                  required
                   
                 />
               </div>
@@ -99,6 +102,7 @@
                   id="telegram"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="Link"
+                  required
                   
                 />
               </div>
@@ -111,6 +115,7 @@
                   id="instagram"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="Link"
+                  required
                   
                 />
               </div>
@@ -123,7 +128,7 @@
                   id="linkedin"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="Link"
-                
+                  required
                 />
               </div>
               </div>
@@ -155,7 +160,7 @@
     <!-- ----------------------------------------- Edit modal ---------------------------------------------------- -->
     <div
       :class="
-        false
+        edit.toggle
           ? 'absolute overflow-y-auto flex bg-[rgba(0,0,0,0.5)] overflow-x-hidden z-50 justify-center items-center w-full inset-0 h-full'
           : 'hidden'
       "
@@ -177,6 +182,7 @@
               Xodim ma'lumotlarini o'zgartirish
             </h3>
             <button
+            @click="cancelFunc1"
               type="button"
               class="bg-transparent hover:bg-gray-200 hover rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
               :class="navbar.userNav ? 'text-white' : 'text-black'"
@@ -197,75 +203,96 @@
             </button>
           </div>
           <!-- Modal body -->
-          <form >
-            <div class="grid font-medium gap-4 mb-4 sm:grid-cols-2">
+          <form @submit.prevent="editProduct">
+            <div class="grid font-medium gap-4 mb-4">
               <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="login" class="block mb-2 text-sm">Login</label>
-                <input
-                  type="text"
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="login" class="block mb-2 text-sm">Rasm</label>
+                <input :class="navbar.userNav ? 'text-white' : 'text-black'"
+                  accept="image/jpg, image/jpeg, image/png"
+                  type="file"
                   name="login"
                   id="login"
-                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
-                  placeholder="login"
-                  required
+                  class="text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Rasm"
+                  @change="(e) => setImg(e)"
+                  
+                  
                 />
               </div>
-              <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="password" class="block mb-2 text-sm">Parol</label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  class="bg-gray-50 placeholder-black border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
-                  placeholder="*********"
-                />
-              </div>
-              <div class="w-[205%]">
+              <div class="flex items-center gap-5">
+                <div class="w-full">
                 <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="name" class="block mb-2 text-sm"
                   >To'liq ismi (I . F . O)</label
                 >
                 <input
+                  v-model="edit.name"
                   type="text"
                   name="name"
                   id="name"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
                   placeholder="To'liq ismini kiriting"
-                  required
+                
                 />
               </div>
-              <div></div>
-              <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="phone" class="block mb-2 text-sm"
-                  >Telefon raqami</label
-                >
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="password" class="block mb-2 text-sm">Lavozim</label>
+                <input 
+                  v-model="edit.position"
+                  type="text"
+                  name="password"
+                  id="password"
                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
-                  placeholder="Telefon raqamini kiriting"
-                  required
+                  placeholder="Lavozim"
+                  
                 />
               </div>
-              <div>
-                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="category" class="block mb-2 text-sm font-medium"
-                  >Lavozimi</label
-                >
-                <select
-                  id="category"
-                  class="bg-gray-50 border border-gray-300 text-md z-10 rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="admin">admin</option>
-                  <option value="o'qituvchi">o'qituvchi</option>
-                  <option value="talaba">talaba</option>
-                </select>
+            </div>
+              <div class="flex items-center gap-5">
+                <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="telegram" class="block mb-2 text-sm">Telegram Link</label>
+                <input
+                  v-model="edit.telegram"
+                  type="text"
+                  name="telegram"
+                  id="telegram"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                  
+                  
+                />
+              </div>
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="instagram" class="block mb-2 text-sm">Instagram Link</label>
+                <input
+                v-model="edit.instagram"
+                  type="text"
+                  name="instagram"
+                  id="instagram"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                  
+                  
+                />
+              </div>
+              <div class="w-full">
+                <label :class="navbar.userNav ? 'text-white' : 'text-black'" for="linkedin" class="block mb-2 text-sm">LinkedIn Link</label>
+                <input
+                v-model="edit.linkidin"
+                  type="text"
+                  name="linkedin"
+                  id="linkedin"
+                  class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5"
+                  placeholder="Link"
+                  
+                />
+              </div>
               </div>
             </div>
             <div
               class="w-full flex items-center justify-between border-t pt-5 mt-5"
             >
               <button
+              @click="cancelFunc1"
                 type="button"
                 class="border cursor-pointer inline-flex items-center bg-white hover:bg-red-700 hover:border-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
@@ -288,7 +315,7 @@
     <!-- ----------------------------------------- Delete modal ---------------------------------------------------- -->
     <div
       :class="
-        false
+        remove.toggle
           ? 'absolute overflow-y-auto flex bg-[rgba(0,0,0,0.5)] overflow-x-hidden z-50 justify-center items-center w-full inset-0 h-full'
           : 'hidden'
       "
@@ -310,6 +337,7 @@
               Xodimni o'chirib tashlash
             </h3>
             <button
+            @click="remove.toggle = false"
               type="button"
               class="bg-transparent hover:bg-gray-200 hover rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
               :class="navbar.userNav ? 'text-white' : 'text-black'"
@@ -345,12 +373,14 @@
                 class="w-full flex items-center justify-between border-t pt-5 mt-5"
               >
                 <button
+                @click="remove.toggle = false"
                   type="button"
                   class="border cursor-pointer inline-flex items-center bg-white hover:bg-red-700 hover:border-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   Bekor qilish
                 </button>
                 <button
+                @click="deleteProduct"
                   class="btnAdd cursor-pointer text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   O'chirish
@@ -464,7 +494,6 @@
                   <th scope="col" class="text-center py-3">F. I. O.</th>
                   <th scope="col" class="text-center py-3">Lavozim</th>
                   <th scope="col" class="text-center py-3">Linklar</th>
-                  <th scope="col" class="text-center py-3">To'liq ma'lumot</th>
                   <th></th>
                 </tr>
               </thead>
@@ -502,19 +531,14 @@
                       <a :href="'https://www.instagram.com/' + i.instagram" target="_blank"><i class="bx bxl-instagram-alt text-[24px]"></i></a>
                     </div>
                   </td>
-                  <td class="text-center font-medium px-5 py-3">
-                    <button
-                      class="btnKirish bg-blue-600 rounded-lg px-5 py-2.5 text-white focus:ring-2"
-                    >
-                      Batafsil
-                    </button>
-                  </td>
                   <td class="text-center whitespace-nowrap font-medium pr-5">
                     <i
+                    @click="getOneProduct(i.id)"
                       class="bx bxs-pencil bg-blue-300 text-blue-600 rounded-lg p-2 mr-3 cursor-pointer focus:ring-2"
                     >
                     </i>
                     <i
+                    @click="deleteFunc(i.id)"
                       class="bx bxs-trash bg-red-300 cursor-pointer text-red-600 rounded-lg p-2 focus:ring-2"
                     >
                     </i>
@@ -553,19 +577,14 @@
                       <a :href="'https://www.instagram.com/' + i.instagram" target="_blank"><i class="bx bxl-instagram-alt text-[24px]"></i></a>
                     </div>
                   </td>
-                  <td class="text-center font-medium px-5 py-3">
-                    <button
-                      class="btnKirish bg-blue-600 rounded-lg px-5 py-2.5 text-white focus:ring-2"
-                    >
-                      Batafsil
-                    </button>
-                  </td>
                   <td class="text-center whitespace-nowrap font-medium pr-5">
                     <i
+                    @click="getOneProduct(i.id)"
                       class="bx bxs-pencil bg-blue-300 text-blue-600 rounded-lg p-2 mr-3 cursor-pointer focus:ring-2"
                     >
                     </i>
                     <i
+                    @click="deleteFunc(i.id)"
                       class="bx bxs-trash bg-red-300 cursor-pointer text-red-600 rounded-lg p-2 focus:ring-2"
                     >
                     </i>
@@ -653,6 +672,13 @@ const router = useRouter();
 const modal = ref(false);
 const toggleModal = () => (modal.value = !modal.value);
 
+const getImg = ref(null);
+const setImg = (e) => {
+  getImg.value = e.target.files[0];
+  console.log(getImg.value.name);
+};
+
+
 const store = reactive({
   PageProduct: "",
   page: [],
@@ -665,7 +691,6 @@ const store = reactive({
 });
 
 function cancelFunc() {
-  form.image = "",
   form.name = "";
   form.position = "";
   form.telegram = "";
@@ -674,8 +699,21 @@ function cancelFunc() {
   modal.value = false;
 }
 
+function deleteFunc(id) {
+  remove.id = id;
+  remove.toggle = true;
+}
+
+function cancelFunc1() {
+  edit.name = "";
+  edit.position = "";
+  edit.telegram = "";
+  edit.instagram = "";
+  edit.linkidin = "";
+  edit.toggle = false;
+}
+
 const form = reactive({
-  image: "",
   name: "",
   position: "",
   telegram: "",
@@ -683,9 +721,26 @@ const form = reactive({
   linkidin: "",
 });
 
+const edit = reactive({
+  image: "",
+  name: "",
+  position: "",
+  telegram: "",
+  instagram: "",
+  linkidin: "",
+  id: "",
+  toggle: false,
+});
+
+const remove = reactive({
+  id: "",
+  toggle: false,
+});
+
 const createProduct = () => {
+  // const img = ref(String(getImg.value))
   const data = {
-    image: form.image,
+    image: getImg.value.name,
     name: form.name,
     position: form.position,
     telegram: form.telegram,
@@ -700,11 +755,12 @@ const createProduct = () => {
     })
     .then((res) => {
       modal.value = false;
+      location.reload()
       notification.success(res.data.message);
       getProduct(store.pagination);
       info.getStaff();
       form.name = "";
-      form.position = "";
+      form.position = ""; 
       form.telegram = "";
       form.instagram = "";
       form.linkidin = "";
@@ -716,7 +772,68 @@ const createProduct = () => {
     });
 };
 
+const getOneProduct = (id) => {
+  axios
+    .get(`/teams/${id}`, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      edit.image = res.data.image;
+      edit.name = res.data.name;
+      edit.position = res.data.position
+      edit.telegram = res.data.telegram
+      edit.instagram = res.data.instagram
+      edit.linkidin = res.data.linkidin
+      edit.id = res.data.id;
+      edit.toggle = true;
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+};
+
+const editProduct = () => {
+  let img = ''
+  if(!getImg.value){
+    img = edit.image
+  }
+  else {
+    img = getImg.value.name
+  }
+  const data = {
+    image: img,
+    name: edit.name,
+    position: edit.position,
+    telegram: edit.telegram,
+    instagram: edit.instagram,
+    linkidin: edit.linkidin
+  };
+  axios
+    .patch(`/teams/${edit.id}`, data, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      notification.success(res.data.message);
+      getProduct(store.pagination);
+      edit.name = "";
+      edit.position = "";
+      edit.telegram = "";
+      edit.instagram = "";
+      edit.linkidin = "";
+      edit.toggle = false;
+    })
+    .catch((error) => {
+      // notification.warning(error.response.data.message);
+      console.log("error", error);
+    });
+};
+
 // ---------------------------- search ------------------------------------
+
 function searchFunc() {
   store.searchList = [];
   for (let i of store.allProducts) {
@@ -769,6 +886,29 @@ const getProduct = (page) => {
       store.error = true;
     });
 };
+
+// ---------------------------- delete start ------------------------------------
+
+const deleteProduct = () => {
+  axios
+    .delete(`/teams/${remove.id}`, {
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+    })
+    .then((res) => {
+      notification.success(res.data.message);
+      getProduct(store.pagination);
+      remove.toggle = false;
+      info.getStaff();
+    })
+    .catch((error) => {
+      notification.warning(error.response.data.message);
+      console.log(error);
+    });
+};
+
+// ---------------------------- delete end ------------------------------------
 
 onMounted(() => {
   getAllProduct();
