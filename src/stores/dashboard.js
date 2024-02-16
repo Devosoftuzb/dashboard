@@ -13,9 +13,9 @@ export const useInfoStore = defineStore('info', () => {
     const getStaff = () => {
         axios
             .get("/advantages", {
-                // headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                // },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
             })
             .then(res => {
                 store.staff = res.data;
@@ -27,9 +27,9 @@ export const useInfoStore = defineStore('info', () => {
     const getStudent = () => {
         axios
             .get("/teams", {
-                // headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                // },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
             })
             .then((res) => {
                 store.students = res.data;
@@ -42,9 +42,9 @@ export const useInfoStore = defineStore('info', () => {
     const getSubjects = () => {
         axios
             .get("/advantages", {
-                // headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                // },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
             })
             .then((res) => {
                 store.subjects = res.data;
@@ -57,9 +57,9 @@ export const useInfoStore = defineStore('info', () => {
     const getGroup = () => {
         axios
             .get("/partnerships", {
-                // headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                // },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
             })
             .then((res) => {
                 store.groups = res.data;

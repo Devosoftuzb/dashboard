@@ -286,9 +286,9 @@ setTimeout(() => {
 const getGuard = () => {
   axios
     .get("/teams", {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {})
     .catch((error) => {

@@ -597,9 +597,9 @@ function searchFunc() {
 const getAllProduct = () =>{
   axios
   .get("/advantages",{
-    // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
   })
   .then((res) => {
       console.log(res.data);
@@ -616,9 +616,9 @@ const getAllProduct = () =>{
 const getProduct = (page) => {
   axios
     .get(`/advantages?page=${page}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       console.log(res.data?.data);

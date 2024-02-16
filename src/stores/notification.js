@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { h } from "vue";
 import { ElNotification } from "element-plus";
 
-export const useNotificationStore = defineStore('nptification', () => {
+export const useNotificationStore = defineStore('notification', () => {
     const success = (message) => {
         if (typeof (message) === 'string') {
             message = [message]

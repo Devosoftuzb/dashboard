@@ -473,9 +473,9 @@ function searchFunc() {
 const getAllProduct = () => {
   axios
     .get("/contacts", {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       console.log(res.data);
@@ -492,9 +492,9 @@ const getAllProduct = () => {
 const getProduct = (page) => {
   axios
     .get(`/contacts?page=${page}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       console.log(res.data?.data);

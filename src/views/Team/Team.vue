@@ -675,7 +675,7 @@ const toggleModal = () => (modal.value = !modal.value);
 const getImg = ref(null);
 const setImg = (e) => {
   getImg.value = e.target.files[0];
-  console.log(getImg.value.name);
+  // console.log(getImg.value);
 };
 
 
@@ -738,9 +738,10 @@ const remove = reactive({
 });
 
 const createProduct = () => {
-  // const img = ref(String(getImg.value))
+  const img = ref(String(getImg.value))
+  console.log(img);
   const data = {
-    image: getImg.value.name,
+    image: img,
     name: form.name,
     position: form.position,
     telegram: form.telegram,
@@ -749,14 +750,15 @@ const createProduct = () => {
   };
   axios
     .post("/teams", data, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       modal.value = false;
-      location.reload()
-      notification.success(res.data.message);
+      // location.reload()
+      notification.success(res.statusText);
+      // console.log(res);
       getProduct(store.pagination);
       info.getStaff();
       form.name = "";
@@ -766,8 +768,8 @@ const createProduct = () => {
       form.linkidin = "";
     })
     .catch((error) => {
-      if (error.response.data.statusCode == 400) {
-        notification.warning(error.response.data.message);
+      if (error.status == 400) {
+        notification.warning(error.message);
       }
     });
 };
@@ -775,9 +777,9 @@ const createProduct = () => {
 const getOneProduct = (id) => {
   axios
     .get(`/teams/${id}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       edit.image = res.data.image;
@@ -812,9 +814,9 @@ const editProduct = () => {
   };
   axios
     .patch(`/teams/${edit.id}`, data, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       notification.success(res.data.message);
@@ -827,7 +829,7 @@ const editProduct = () => {
       edit.toggle = false;
     })
     .catch((error) => {
-      // notification.warning(error.response.data.message);
+      notification.warning(error.message);
       console.log("error", error);
     });
 };
@@ -851,38 +853,38 @@ function searchFunc() {
 const getAllProduct = () => {
   axios
     .get("/teams", {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       store.allProducts = res.data?.data;
       store.error = false;
     })
     .catch((error) => {
-      notification.warning(error.response.data.message);
+      notification.warning(error.message);
       store.error = true;
-      store.allProducts = error.response.data.message;
+      store.allProducts = error.message;
     });
 };
 
 const getProduct = (page) => {
   axios
     .get(`/teams?page=${page}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
-      console.log(res.data?.data);
+      // console.log(res.data?.data);
       store.PageProduct = res.data?.data;
       store.page = [];
       store.page.push(res.data?.from, res.data?.to, res.data?.total);
       store.error = false;
     })
     .catch((error) => {
-      store.PageProduct = error.response.data.message;
+      store.PageProduct = error.response.statusText;
       store.error = true;
     });
 };
@@ -892,18 +894,18 @@ const getProduct = (page) => {
 const deleteProduct = () => {
   axios
     .delete(`/teams/${remove.id}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
-      notification.success(res.data.message);
+      notification.success(res.statusText);
       getProduct(store.pagination);
       remove.toggle = false;
       info.getStaff();
     })
     .catch((error) => {
-      notification.warning(error.response.data.message);
+      notification.warning(error.response.statusText);
       console.log(error);
     });
 };

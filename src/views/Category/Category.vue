@@ -133,7 +133,8 @@
         <!-- ----------------------------------------- Edit END ---------------------------------------------------- -->
 
         <!-- ----------------------------------------- Delete modal ---------------------------------------------------- -->
-        <div :class="false
+        <div :class="
+            remove.toggle
                 ? 'absolute overflow-y-auto flex bg-[rgba(0,0,0,0.5)] overflow-x-hidden z-50 justify-center items-center w-full inset-0 h-full'
                 : 'hidden'
             ">
@@ -146,6 +147,7 @@
                             Kategoriyani o'chirib tashlash
                         </h3>
                         <button type="button"
+                        @click="remove.toggle = false"
                             class="bg-transparent hover:bg-gray-200 hover rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
                             :class="navbar.userNav ? 'text-white' : 'text-black'">
                             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -167,10 +169,12 @@
                             </div>
                             <div class="w-full flex items-center justify-between border-t pt-5 mt-5">
                                 <button type="button"
+                                @click="remove.toggle = false"
                                     class="border cursor-pointer inline-flex items-center bg-white hover:bg-red-700 hover:border-red-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     Bekor qilish
                                 </button>
                                 <button
+                                @click="deleteProduct"
                                     class="btnAdd cursor-pointer text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     O'chirish
                                 </button>
@@ -286,6 +290,7 @@
                                             class="bx bxs-pencil bg-blue-300 text-blue-600 rounded-lg p-2 mr-3 cursor-pointer focus:ring-2">
                                         </i>
                                         <i
+                                        @click="deleteFunc(i.id)"
                                             class="bx bxs-trash bg-red-300 cursor-pointer text-red-600 rounded-lg p-2 focus:ring-2">
                                         </i>
                                     </td>
@@ -317,6 +322,7 @@
                                             class="bx bxs-pencil bg-blue-300 text-blue-600 rounded-lg p-2 mr-3 cursor-pointer focus:ring-2">
                                         </i>
                                         <i
+                                        @click="deleteFunc(i.id)"
                                             class="bx bxs-trash bg-red-300 cursor-pointer text-red-600 rounded-lg p-2 focus:ring-2">
                                         </i>
                                     </td>
@@ -411,6 +417,15 @@ const store = reactive({
   searchList: [],
 });
 
+const remove = reactive({
+  id: "",
+  toggle: false,
+});
+
+function deleteFunc(id) {
+  remove.id = id;
+  remove.toggle = true;
+}
 
 // ---------------------------- search ------------------------------------
 function searchFunc() {
@@ -431,9 +446,9 @@ function searchFunc() {
 const getAllProduct = () => {
   axios
     .get("/categories", {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       console.log(res.data);
@@ -450,9 +465,9 @@ const getAllProduct = () => {
 const getProduct = (page) => {
   axios
     .get(`/categories?page=${page}`, {
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
-      // },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     })
     .then((res) => {
       console.log(res.data?.data);
@@ -464,6 +479,25 @@ const getProduct = (page) => {
     .catch((error) => {
       store.PageProduct = error.response.data.message;
       store.error = true;
+    });
+};
+
+const deleteProduct = () => {
+  axios
+    .delete(`/categories/${remove.id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((res) => {
+      notification.success(res.statusText);
+      getProduct(store.pagination);
+      remove.toggle = false;
+      info.getStaff();
+    })
+    .catch((error) => {
+      notification.warning(error.message);
+      console.log(error);
     });
 };
 
